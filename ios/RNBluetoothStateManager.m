@@ -30,11 +30,18 @@ RCT_EXPORT_MODULE()
 
 -(instancetype)init{
   self = [super init];
-  if(self){
-    cb = [[CBCentralManager alloc] initWithDelegate:nil queue:nil options:@{CBCentralManagerOptionShowPowerAlertKey: @NO}];
-    [cb setDelegate:self];
-  }
+//  if(self){
+//    NSDictionary *options = @{CBCentralManagerOptionShowPowerAlertKey: @NO};
+//
+//    cb = [[CBCentralManager alloc] initWithDelegate:nil queue:nil options:options];
+//    [cb setDelegate:self];
+//  }
   return self;
+}
+
+RCT_EXPORT_METHOD(setup:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
+  [self setupBluetooth];
+  resolve(nil);
 }
 
 NSString *const EVENT_BLUETOOTH_STATE_CHANGE = @"EVENT_BLUETOOTH_STATE_CHANGE";
@@ -51,11 +58,13 @@ NSString *const EVENT_BLUETOOTH_STATE_CHANGE = @"EVENT_BLUETOOTH_STATE_CHANGE";
 // BLUETOOTH STATE
 
 RCT_EXPORT_METHOD(getState:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
+  [self setupBluetooth];
   NSString *stateName = [self bluetoothStateToString:cb.state];
   resolve(stateName);
 }
 
 -(void)centralManagerDidUpdateState:(CBCentralManager *)central{
+  [self setupBluetooth];
   NSString *stateName = [self bluetoothStateToString:central.state];
   [self sendEventBluetoothStateChange:stateName];
 }
@@ -115,6 +124,19 @@ RCT_EXPORT_METHOD(requestToEnable:(RCTPromiseResolveBlock)resolve rejecter:(RCTP
       return @"Unknown";
   }
 }
+
+- (void)setupBluetooth {
+    if(self.isSetup){
+        return;
+    }
+    NSDictionary *options = @{CBCentralManagerOptionShowPowerAlertKey: @YES};
+
+    cb = [[CBCentralManager alloc] initWithDelegate:self queue:nil options:options];
+    [cb setDelegate:self];
+
+    self.isSetup = true;
+}
+
 
 @end
 
