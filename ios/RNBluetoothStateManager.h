@@ -8,5 +8,5 @@
 #endif
 
 @interface RNBluetoothStateManager : RCTEventEmitter<RCTBridgeModule, CBCentralManagerDelegate>
-
+@property (assign) BOOL isSetup;
 @end
