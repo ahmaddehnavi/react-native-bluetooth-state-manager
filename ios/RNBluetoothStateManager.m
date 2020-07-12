@@ -129,7 +129,7 @@ RCT_EXPORT_METHOD(requestToEnable:(RCTPromiseResolveBlock)resolve rejecter:(RCTP
     if(self.isSetup){
         return;
     }
-    NSDictionary *options = @{CBCentralManagerOptionShowPowerAlertKey: @YES};
+    NSDictionary *options = @{CBCentralManagerOptionShowPowerAlertKey: @NO};
 
     cb = [[CBCentralManager alloc] initWithDelegate:self queue:nil options:options];
     [cb setDelegate:self];
