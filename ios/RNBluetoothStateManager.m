@@ -1,4 +1,5 @@
 
+
 #import <CoreBluetooth/CoreBluetooth.h>
 #import "RNBluetoothStateManager.h"
 
@@ -43,6 +44,18 @@ RCT_EXPORT_METHOD(setup:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseReje
   [self setupBluetooth];
   resolve(nil);
 }
+
+RCT_EXPORT_METHOD(requestToEnable:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
+  [self setupBluetooth];
+  if(cb.state == CBManagerStatePoweredOff){
+       [self askToEnable];
+  } else if(cb.state == CBManagerStateUnauthorized){
+    [[UIApplication sharedApplication] openURL:[NSURL URLWithString:UIApplicationOpenSettingsURLString]];
+  }
+ 
+  resolve(nil);
+}
+
 
 NSString *const EVENT_BLUETOOTH_STATE_CHANGE = @"EVENT_BLUETOOTH_STATE_CHANGE";
 
@@ -92,10 +105,10 @@ RCT_EXPORT_METHOD(disable:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRe
   reject(@"UNSUPPORTED", @"Not implemented in iOS", error);
 }
 
-RCT_EXPORT_METHOD(requestToEnable:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
-  NSError* error = nil;
-  reject(@"UNSUPPORTED", @"Not implemented in iOS", error);
-}
+//RCT_EXPORT_METHOD(requestToEnable:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
+//  NSError* error = nil;
+//  reject(@"UNSUPPORTED", @"Not implemented in iOS", error);
+//}
 
 // ----------------------------------------------------------------------------------------------- -
 // HELPERS
@@ -127,16 +140,28 @@ RCT_EXPORT_METHOD(requestToEnable:(RCTPromiseResolveBlock)resolve rejecter:(RCTP
 
 - (void)setupBluetooth {
     if(self.isSetup){
+//        if(cb.state == CBManagerStatePoweredOff){
+//            [self askToEnable];
+//        }
         return;
     }
     NSDictionary *options = @{CBCentralManagerOptionShowPowerAlertKey: @NO};
 
     cb = [[CBCentralManager alloc] initWithDelegate:self queue:nil options:options];
     [cb setDelegate:self];
-
+    
+//    if(cb.state == CBManagerStatePoweredOff){
+//        [self askToEnable];
+//    }
+    
     self.isSetup = true;
 }
 
-
+- (void)askToEnable {
+    NSDictionary *options = @{CBCentralManagerOptionShowPowerAlertKey: @YES};
+    [[CBCentralManager alloc] initWithDelegate:nil queue:nil options:options];
+}
 @end
+
+
 
