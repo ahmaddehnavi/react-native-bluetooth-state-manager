@@ -29,7 +29,6 @@
     "semantic-release": "15.13.31"
   },
   "peerDependencies": {
-    "prop-types": "15.6.1",
     "react": "^17.0.2",
     "react-native": "^0.66.0"
   },
