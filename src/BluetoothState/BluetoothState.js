@@ -1,4 +1,3 @@
-import PropTypes from 'prop-types';
 import React from 'react';
 
 import BluetoothStateManager from '../BluetoothStateManager';
@@ -7,10 +6,10 @@ import withBluetoothStateType from './withBluetoothStateType';
 import { BluetoothStateTypesList } from '../BluetoothStateTypes';
 
 class BluetoothStatus extends React.PureComponent {
-  static propTypes = {
-    emitCurrentBleState: PropTypes.bool,
-    onChange: PropTypes.func,
-  };
+//   static propTypes = {
+//     emitCurrentBleState: PropTypes.bool,
+//     onChange: PropTypes.func,
+//   };
 
   static defaultProps = {
     emitCurrentBleState: true,
